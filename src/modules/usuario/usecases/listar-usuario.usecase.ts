@@ -4,7 +4,7 @@ import { UsuarioMapper } from "../mappers/usuario.mapper";
 
 export class ListarTodosUseCase{
     constructor (
-        @Inject('UsuarioRepository')
+        @Inject('IUSUARIO_REPOSITORY')
         private readonly usuarioRepository: UsuarioRepository
     ){}
 
