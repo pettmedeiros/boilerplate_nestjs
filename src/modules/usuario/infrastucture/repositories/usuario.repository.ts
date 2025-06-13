@@ -8,12 +8,11 @@ export class UsuarioRepositoryImpl implements UsuarioRepository {
   constructor(private readonly prisma: PrismaService) {}
 
   private toDomain(usuarioPrisma: any): Usuario {
-    //criei toDomain para converter um objeto cru vindo do Prisma (que é só um JSON, um objeto comum do banco) em uma instância da sua entidade Usuario,
     return new Usuario(
       usuarioPrisma.nome,
       usuarioPrisma.email,
       usuarioPrisma.senha,
-      usuarioPrisma.id, // usando o id que veio do banco
+      usuarioPrisma.id,
     );
   }
 
@@ -25,23 +24,22 @@ export class UsuarioRepositoryImpl implements UsuarioRepository {
         nome: usuario.getNome(),
       },
     });
-
-    // converte para entidade antes de retornar
     return this.toDomain(novoUsuario);
   }
 
-  async buscarPorEmail(email: string): Promise<Usuario | null> {
-    // vai retornar um usuario ou null
+  async buscarPorId(id: number): Promise<Usuario | null> {
     const usuario = await this.prisma.usuario.findUnique({
-      where: {
-        email,
-      },
+      where: { id: id },
     });
+    if (!usuario) return null;
+    return new Usuario(usuario.nome, usuario.email, usuario.senha, usuario.id);
+  }
 
-    if (!usuario) {
-      return null; // não lança erro aqui, deixa o caso de uso decidir o que fazer
-    }
-
+  async buscarPorEmail(email: string): Promise<Usuario | null> {
+    const usuario = await this.prisma.usuario.findUnique({
+      where: { email },
+    });
+    if (!usuario) return null;
     return this.toDomain(usuario);
   }
 
@@ -50,6 +48,19 @@ export class UsuarioRepositoryImpl implements UsuarioRepository {
     return usuariosPrisma.map((usuarioPrisma) => this.toDomain(usuarioPrisma));
   }
 
+  async atualizar(usuario: Usuario): Promise<Usuario> {
+  const atualizado = await this.prisma.usuario.update({
+    where: { id: usuario.getId() },
+    data: {
+      nome: usuario.getNome(),
+      email: usuario.getEmail(),
+      senha: usuario.getSenha(),
+    },
+  });
+
+  return this.toDomain(atualizado);
+}
+
   async atualizarNome(usuario: Usuario): Promise<void> {
     await this.prisma.usuario.update({
       where: { id: usuario.getId() },
@@ -57,24 +68,55 @@ export class UsuarioRepositoryImpl implements UsuarioRepository {
     });
   }
 
+  async atualizarEmail(usuario: Usuario): Promise<Usuario> {
+    // Verificar se o email já existe para outro usuário
+    const emailExistente = await this.prisma.usuario.findFirst({
+      where: {
+        email: usuario.getEmail(),
+        id: { not: usuario.getId() }, // Exclui o próprio usuário
+      },
+    });
+
+    if (emailExistente) {
+      throw new Error('O email já está em uso por outro usuário.');
+    }
+
+    const atualizado = await this.prisma.usuario.update({
+      where: { id: usuario.getId() },
+      data: { email: usuario.getEmail() },
+    });
+    return this.toDomain(atualizado);
+  }
+
   async atualizarSenha(usuario: Usuario): Promise<void> {
     await this.prisma.usuario.update({
-      where: { id: usuario.getId() },
+      where: { id: usuario.getId()},
       data: { senha: usuario.getSenha() },
     });
   }
 
-  async deletar(id: string): Promise<void> {
+  async deletar(id: number): Promise<void> {
     await this.prisma.usuario.delete({
-      where: { id },
+      where: { id: id },
     });
   }
 
-  async existeId(id: string): Promise<boolean> {
+  async existeId(id: number): Promise<boolean> {
     const usuario = await this.prisma.usuario.findUnique({
-      where: { id },
+      where: { id: id },
       select: { id: true },
     });
-    return !!usuario; // retorna true
+    return !!usuario;
+  }
+  
+  async salvar(usuario: Usuario): Promise<void> {
+    await this.prisma.usuario.update({
+      where: { id: usuario.getId() },
+      data: {
+        nome: usuario.getNome(),
+        email: usuario.getEmail(),
+        senha: usuario.getSenha(),
+      },
+    });
   }
 }

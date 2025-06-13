@@ -1,7 +1,7 @@
 
 export class UsuarioDto {
   constructor(
-    public id: string,
+    public id: number,
     public nome: string,
     public email: string,
   ) {}

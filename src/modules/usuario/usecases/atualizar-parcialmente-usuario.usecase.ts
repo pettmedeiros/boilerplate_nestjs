@@ -1,18 +1,18 @@
-import { Inject, Injectable, NotFoundException, BadRequestException } from "@nestjs/common";
-import { UsuarioRepository } from "../domain/repositories/usuario.repository.interface";
-import { AtualizarUsuarioDto } from "../dtos/atualizar-usuario.dto";
+import { BadRequestException, Inject, Injectable, NotFoundException } from "@nestjs/common";
 import { ExisteIdUsecase } from "./exiteId-usuario.useCase";
-import { Usuario } from "../domain/entities/usuario.entity";
+import { UsuarioRepository } from "../domain/repositories/usuario.repository.interface";
+import { AtualizarParcialmenteUsuarioDto } from "../dtos/atualizar-parcialmente-usuario.dto";
+import { Usuario } from "../domain/entities/usuario.entity"; // Usando a entidade de domínio
 
-@Injectable()
-export class AtualizarUsuarioUseCase {
+@Injectable() // Adicionando a anotação Injectable
+export class AtualizarParcialmenteUsuarioUseCase {
   constructor(
     @Inject('IUSUARIO_REPOSITORY')
     private readonly usuarioRepository: UsuarioRepository,
     private readonly existeId: ExisteIdUsecase
   ) {}
 
-  async executar(id: number, dto: AtualizarUsuarioDto): Promise<Usuario> {
+  async executar(id: number, dto: AtualizarParcialmenteUsuarioDto): Promise<Usuario> {
     const existe = await this.existeId.executar(id);
 
     if (!existe) {

@@ -5,6 +5,7 @@ import { UsuarioMapper } from "../mappers/usuario.mapper";
 import { UsuarioRepository } from "../domain/repositories/usuario.repository.interface";
 import { Usuario } from "../domain/entities/usuario.entity";
 
+@Injectable()
 export class CriarUsuarioUseCase{
      constructor(
     @Inject('IUSUARIO_REPOSITORY')

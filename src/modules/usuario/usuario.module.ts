@@ -5,6 +5,10 @@ import { UsuarioRepositoryImpl } from "./infrastucture/repositories/usuario.repo
 import { PrismaModule } from "src/prisma/prisma.module";
 import { CriarUsuarioUseCase } from "./usecases/criar-usuario.usecase";
 import { ListarTodosUseCase } from "./usecases/listar-usuario.usecase";
+import { AtualizarUsuarioUseCase } from "./usecases/atualizar-usuario.useCase";
+import { DeletarUsecase } from "./usecases/deletar-usuario.usecase";
+import { ExisteIdUsecase } from "./usecases/exiteId-usuario.useCase";
+import { AtualizarParcialmenteUsuarioUseCase } from "./usecases/atualizar-parcialmente-usuario.usecase";
 
 @Module({
   imports: [PrismaModule],
@@ -12,6 +16,10 @@ import { ListarTodosUseCase } from "./usecases/listar-usuario.usecase";
   providers: [
     CriarUsuarioUseCase,
     ListarTodosUseCase,
+    AtualizarUsuarioUseCase,
+    AtualizarParcialmenteUsuarioUseCase,
+    DeletarUsecase,
+    ExisteIdUsecase,
     {
       provide: 'IUSUARIO_REPOSITORY',
       useClass: UsuarioRepositoryImpl,

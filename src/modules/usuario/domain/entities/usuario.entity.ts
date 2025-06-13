@@ -1,19 +1,17 @@
-import { v4 as uuidv4 } from 'uuid';
-
 export class Usuario {
-  private readonly id: string;
+  private readonly id: number | undefined;
   private nome: string;
   private email: string;
   private senha: string;
 
-  constructor(nome: string, email: string, senha: string, id?: string) {
-    this.id = id ?? uuidv4(); // se não passar, gera novo
+  constructor(nome: string, email: string, senha: string, id?: number) {
+    this.id = id; // id é opcional e pode ser undefined; o Prisma o gerará se não for fornecido
     this.nome = nome;
     this.email = email;
     this.senha = senha;
   }
 
-  public getId(): string {
+  public getId(): number | undefined {
     return this.id;
   }
 
@@ -35,5 +33,9 @@ export class Usuario {
 
   public atualizarSenha(senha: string): void {
     this.senha = senha;
+  }
+
+  public atualizarEmail(email: string): void{
+    this.email = email;
   }
 }
