@@ -5,8 +5,7 @@
 <h1 align="center"Boilerplate NestJS - API de Gerenciamento de Usuários</h1>
 
 <p align="center">
- API RESTfulcconstruída com [NestJS], projetada para gerenciar usuários com autenticação baseada em JWT. O projeto utiliza [Prisma] como ORM, [bcrypt] para hash de senhas, e segue princípios de Clean Architecture com camadas de domínio, repositórios e use cases.
- 
+ API para autenticação de usuários utilizando NestJs. 
 </p>
 
 ---
