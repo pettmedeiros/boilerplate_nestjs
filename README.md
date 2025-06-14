@@ -69,11 +69,30 @@ $ npm run start:dev
 
 # modo de produção
 $ npm run start:prod
-
-
-
 ```
+## 📖 Uso
 
+### Endpoints Disponíveis
+| Método | Endpoint         | Descrição                  | Corpo (se aplicável)                     | Autenticação |
+|--------|------------------|----------------------------|------------------------------------------|--------------|
+| `POST` | `/usuarios`      | Cria um novo usuário       | `{ "nome": "string", "email": "string", "senha": "string" }` | Não          |
+| `POST` | `/usuarios/login`| Autentica um usuário       | `{ "email": "string", "senha": "string" }` | Não          |
+| `GET`  | `/usuarios`      | Lista todos os usuários    | -                                        | Sim          |
+| `GET`  | `/usuarios/:id`  | Busca um usuário por ID    | -                                        | Sim          |
+| `PUT`  | `/usuarios/:id`  | Atualiza um usuário        | `{ "nome": "string", "email": "string", "senha": "string" }` | Sim          |
+| `DELETE` | `/usuarios/:id` | Exclui um usuário         | -                                        | Sim          |
+
+- **Autenticação**: Inclua o token JWT no header `Authorization` como `Bearer <token>` para endpoints protegidos.
+
+### Exemplo com Postman
+1. **Criar um Usuário**:
+   - Envie uma requisição `POST` para `/usuarios` com o seguinte corpo:
+     ```json
+     {
+       "nome": "Peterson",
+       "email": "peterson@example.com",
+       "senha": "Senha@123"
+     }
 
  # Autor
    Peterson Lisboa Medeiros
