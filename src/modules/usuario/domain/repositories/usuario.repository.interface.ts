@@ -16,4 +16,5 @@ export interface UsuarioRepository {
   deletar(id: number): Promise<void>;
   existeId(id: number): Promise<boolean>;
   salvar(usuario: Usuario): Promise<void>;
+  verificarSenha(email: string, senha: string): Promise<boolean>;
 }

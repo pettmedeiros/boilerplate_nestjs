@@ -3,12 +3,13 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { UsuarioModule } from './modules/usuario/usuario.module';
+import { AuthModule } from './modules/usuario/auth/auth.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot(), // vai procurar o arquivo env e carregar as variaveis dando acesso 
     forwardRef(() => UsuarioModule), 
-    //forwardRef(() => AuthModule)
+    forwardRef(() => AuthModule)
   ],
   controllers: [AppController],
   providers: [AppService],

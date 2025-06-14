@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { UsuarioRepository } from "../../domain/repositories/usuario.repository.interface";
 import { PrismaService } from "src/prisma/prisma.service";
 import { Usuario } from "../../domain/entities/usuario.entity";
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsuarioRepositoryImpl implements UsuarioRepository {
@@ -17,10 +18,11 @@ export class UsuarioRepositoryImpl implements UsuarioRepository {
   }
 
   async criarUsuario(usuario: Usuario): Promise<Usuario> {
+    const senhaHash = await bcrypt.hash(usuario.getSenha(), 10);
     const novoUsuario = await this.prisma.usuario.create({
       data: {
         email: usuario.getEmail(),
-        senha: usuario.getSenha(),
+        senha: senhaHash,
         nome: usuario.getNome(),
       },
     });
@@ -29,18 +31,16 @@ export class UsuarioRepositoryImpl implements UsuarioRepository {
 
   async buscarPorId(id: number): Promise<Usuario | null> {
     const usuario = await this.prisma.usuario.findUnique({
-      where: { id: id },
+      where: { id },
     });
-    if (!usuario) return null;
-    return new Usuario(usuario.nome, usuario.email, usuario.senha, usuario.id);
+    return usuario ? this.toDomain(usuario) : null; // Usando toDomain para consistência
   }
 
   async buscarPorEmail(email: string): Promise<Usuario | null> {
     const usuario = await this.prisma.usuario.findUnique({
       where: { email },
     });
-    if (!usuario) return null;
-    return this.toDomain(usuario);
+    return usuario ? this.toDomain(usuario) : null;
   }
 
   async listarTodos(): Promise<Usuario[]> {
@@ -49,17 +49,17 @@ export class UsuarioRepositoryImpl implements UsuarioRepository {
   }
 
   async atualizar(usuario: Usuario): Promise<Usuario> {
-  const atualizado = await this.prisma.usuario.update({
-    where: { id: usuario.getId() },
-    data: {
-      nome: usuario.getNome(),
-      email: usuario.getEmail(),
-      senha: usuario.getSenha(),
-    },
-  });
-
-  return this.toDomain(atualizado);
-}
+    const senhaHash = await bcrypt.hash(usuario.getSenha(), 10);
+    const atualizado = await this.prisma.usuario.update({
+      where: { id: usuario.getId() },
+      data: {
+        nome: usuario.getNome(),
+        email: usuario.getEmail(),
+        senha: senhaHash,
+      },
+    });
+    return this.toDomain(atualizado);
+  }
 
   async atualizarNome(usuario: Usuario): Promise<void> {
     await this.prisma.usuario.update({
@@ -69,11 +69,10 @@ export class UsuarioRepositoryImpl implements UsuarioRepository {
   }
 
   async atualizarEmail(usuario: Usuario): Promise<Usuario> {
-    // Verificar se o email já existe para outro usuário
     const emailExistente = await this.prisma.usuario.findFirst({
       where: {
         email: usuario.getEmail(),
-        id: { not: usuario.getId() }, // Exclui o próprio usuário
+        id: { not: usuario.getId() },
       },
     });
 
@@ -89,34 +88,44 @@ export class UsuarioRepositoryImpl implements UsuarioRepository {
   }
 
   async atualizarSenha(usuario: Usuario): Promise<void> {
+    const senhaHash = await bcrypt.hash(usuario.getSenha(), 10);
     await this.prisma.usuario.update({
-      where: { id: usuario.getId()},
-      data: { senha: usuario.getSenha() },
+      where: { id: usuario.getId() },
+      data: { senha: senhaHash },
     });
   }
 
   async deletar(id: number): Promise<void> {
     await this.prisma.usuario.delete({
-      where: { id: id },
+      where: { id },
     });
   }
 
   async existeId(id: number): Promise<boolean> {
     const usuario = await this.prisma.usuario.findUnique({
-      where: { id: id },
+      where: { id },
       select: { id: true },
     });
     return !!usuario;
   }
-  
+
   async salvar(usuario: Usuario): Promise<void> {
+    const senhaHash = await bcrypt.hash(usuario.getSenha(), 10);
     await this.prisma.usuario.update({
       where: { id: usuario.getId() },
       data: {
         nome: usuario.getNome(),
         email: usuario.getEmail(),
-        senha: usuario.getSenha(),
+        senha: senhaHash,
       },
     });
+  }
+
+  async verificarSenha(email: string, senha: string): Promise<boolean> {
+    const usuario = await this.prisma.usuario.findUnique({where: {email}});
+    if (!usuario) {
+      return false;
+    }
+    return await bcrypt.compare(senha, usuario.senha);
   }
 }
