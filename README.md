@@ -44,7 +44,7 @@ Foram implementadas as seguintes funcionalidades:
 ### Clonando o repositório
 
 ```bash
-git clone https://github.com/pettmedeiros/ProjetoNestJS
+git clone https://github.com/pettmedeiros/boilerplate_nestjs
 cd ProjetoNestJs
 
 ## Instalando as dependências
@@ -52,6 +52,11 @@ cd ProjetoNestJs
 ```bash
 $ npm install
 ```
+## Configurando ambiente:
+Crie um arquivo .env 
+DATABASE_URL="postgresql://usuario:suasenha@localhost:5432/boilerplate_nestjs?schema=public"
+JWT_SECRET=seu_jwt_secreto_aqui_2025
+PORT=3000
 
 ## Compilar e executar o projeto
 
@@ -64,6 +69,9 @@ $ npm run start:dev
 
 # modo de produção
 $ npm run start:prod
+
+
+
 ```
 
 
