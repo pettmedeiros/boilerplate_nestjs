@@ -73,16 +73,15 @@ $ npm run start:prod
 ## 📖 Uso
 
 ### Endpoints Disponíveis
-| Método | Endpoint         | Descrição                  | Corpo (se aplicável)                     | Autenticação |
-|--------|------------------|----------------------------|------------------------------------------|--------------|
-| `POST` | `/usuarios`      | Cria um novo usuário       | `{ "nome": "string", "email": "string", "senha": "string" }` | Não          |
-| `POST` | `/usuarios/login`| Autentica um usuário       | `{ "email": "string", "senha": "string" }` | Não          |
-| `GET`  | `/usuarios`      | Lista todos os usuários    | -                                        | Sim          |
-| `GET`  | `/usuarios/:id`  | Busca um usuário por ID    | -                                        | Sim          |
-| `PUT`  | `/usuarios/:id`  | Atualiza um usuário        | `{ "nome": "string", "email": "string", "senha": "string" }` | Sim          |
-| `DELETE` | `/usuarios/:id` | Exclui um usuário         | -                                        | Sim          |
+| Método | Endpoint         | Descrição                  | Corpo (se aplicável)                     
+|--------|------------------|----------------------------|------------------------------------------|
+| `POST` | `/usuarios`      | Cria um novo usuário       | `{ "nome": "string", "email": "string", "senha": "string" }` |
+| `POST` | `/usuarios/login`| Autentica um usuário       | `{ "email": "string", "senha": "string" }` |
+| `GET`  | `/usuarios`      | Lista todos os usuários    | -                                        |
+| `GET`  | `/usuarios/:id`  | Busca um usuário por ID    | -                                        |
+| `PUT`  | `/usuarios/:id`  | Atualiza um usuário        | `{ "nome": "string", "email": "string", "senha": "string" }` |
+| `DELETE` | `/usuarios/:id` | Exclui um usuário         | -                                        |
 
-- **Autenticação**: Inclua o token JWT no header `Authorization` como `Bearer <token>` para endpoints protegidos.
 
 ### Exemplo com Postman
 1. **Criar um Usuário**:
